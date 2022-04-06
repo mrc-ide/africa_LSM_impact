@@ -1,18 +1,18 @@
-# # #Test values
-seasonal = 1
-resistance = 40
-itn_use = 0.2
-irs_use = 0
-prevalence_target = 0.1
-net_type_use = "standard"
-itn_future = 0.2
-irs_future = 0
-lsm_future = 0.05
-net_type_future = "PBO"
-years_run_future = 12
-itn_future_distribution = 3
-irs_future_distribution = 1
-species_proportion = "0.5;0.25;0.25"
+# # # #Test values
+# seasonal = 1
+# resistance = 40
+# itn_use = 0.2
+# irs_use = 0
+# prevalence_target = 0.1
+# net_type_use = "standard"
+# itn_future = 0.2
+# irs_future = 0
+# lsm_future = 0.05
+# net_type_future = "PBO"
+# years_run_future = 12
+# itn_future_distribution = 3
+# irs_future_distribution = 1
+# species_proportion = "0.5;0.25;0.25"
 
 
 malaria_simulation_setup <- function(
@@ -29,6 +29,7 @@ malaria_simulation_setup <- function(
   
   itn_future,             #Set up the future itn coverage
   irs_future,             #Set up the future irs coverage
+  lsm_future,             #Set up the future LSM coverage (reduction in adult emergence)
   net_type_future,        #Set up the future itn type
   years_run_future,       #How many years post intervention do you run 
   uncertainty_draw = "median", #Which uncertainty draw to take for net/irs parameters, accepts low/median/high

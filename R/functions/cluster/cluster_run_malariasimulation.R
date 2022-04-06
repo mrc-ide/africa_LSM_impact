@@ -8,8 +8,8 @@
 # summarise_annual = T
 
 
-cluster_run_malariasimulation <- function(row_MINT_combinations,
-                                          row_MINT_future_interventions,
+cluster_run_malariasimulation <- function(row_SSA_adm1,
+                                          row_future_interventions,
                                           years_run_future,       #How many years post intervention do you run 
                                           savemod,
                                           itn_future_distribution = 3, #How often (in years) you want to distribute nets with future coverage

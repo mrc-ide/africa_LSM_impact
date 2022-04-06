@@ -1,7 +1,7 @@
 # row_MINT_combinations = run_all$row_MINT_combinations[1]
 # savemod = run_all$savemod[1]
 
-cluster_calibrate <- function(row_MINT_combinations,
+cluster_calibrate <- function(SSA_adm1,
                               savemod){
   
   #Front part of the file repo and then create a folder if it doesnt exist

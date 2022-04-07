@@ -17,8 +17,10 @@
 
 malaria_simulation_setup <- function(
   
+  SSA_adm1,                #SSA adm1 id to find seasonality
+  
   #Set up baseline levels
-  seasonal,                #1 = perennial, 2 = seasonal vector populations
+  seasonal,                #T or F, 
   resistance,              #Pyrethroid resistance, percent surviving takes in 0/20/40/60/80/100
   
   #Set up intervention values and how long they run
@@ -44,6 +46,7 @@ malaria_simulation_setup <- function(
   
   #Record all entry data
   input_data <- data.frame(
+    SSA_adm1,
     seasonal,                #1 = perennial, 2 = seasonal vector populations
     resistance,              #Pyrethroid resistance, percent surviving takes in 0/20/40/60/80/100
     
@@ -68,22 +71,18 @@ malaria_simulation_setup <- function(
   )
   
   # Load data ---------------------------------------------------------------
-  #Load in the site file for seasonal parameters and subset to what we want
-  site <- rio::import("1_ModelSimulations/input_files/Sites/site_file_Global_malariasimulation.csv")
-  site_use <- site[which(site$seasonality == seasonal), ]
-
-  #Load in and subset resistance
-  resistance_before <- rio::import(paste0("1_ModelSimulations/input_files/input_params_v1/Pyrethroid_resistance_", 
-                                      resistance, 
-                                      "_input_data", 
-                                      ifelse(net_type_use == "standard", "", paste0("_", net_type_use)),
-                                      ".csv"))[1, ]
+  #Load in the seasonal parameters and subset to what we want
+  all_SSA_location <- read.csv("data/SSA_adm1_characteristics/MAP_2020_subset.csv")
+  all_SSA_location_here <- all_SSA_location[which(all_SSA_location$GID_1 == SSA_adm1), ]
   
-  resistance_after <- rio::import(paste0("1_ModelSimulations/input_files/input_params_v1/Pyrethroid_resistance_", 
-                                          resistance, 
-                                          "_input_data", 
-                                          ifelse(net_type_use == "standard", "", paste0("_", net_type_future)),
-                                          ".csv"))[1, ]
+  
+  site <- rio::import("data/SSA_adm1_characteristics/admin_units_seasonal.rds")
+  site_use <- site[which(site$country == all_SSA_location_here$NAME_0 &
+                           site$admin1 == all_SSA_location_here$NAME_1), ]
+  
+  #Load in and subset resistance
+  resistance_before <- rio::import("data/resistance/pyr_only.csv")
+  resistance_after <- rio::import("data/resistance/pyr_only.csv")
   
   # Set up malariasimulation baseline inputs --------------------------------
   #Set up the basic info for malariasimulation
@@ -104,9 +103,9 @@ malaria_simulation_setup <- function(
       clinical_incidence_rendering_max_ages = c(5, 100) * 365, #This sets up the maximum ages, so we will have 2 variables for the 0-5 incidence and 0-100
       
       model_seasonality = TRUE, #Seasonablity is enabled, we then feed in the seasonality values
-      g0 = site_use$seasonal_a0,
-      g = c(site_use$seasonal_a1, site_use$seasonal_a2, site_use$seasonal_a3),
-      h = c(site_use$seasonal_b1, site_use$seasonal_b2, site_use$seasonal_b3),
+      g0 = site_use$a0,
+      g = c(site_use$a1, site_use$a2, site_use$a3),
+      h = c(site_use$b1, site_use$b2, site_use$b3),
       
       individual_mosquitoes = FALSE, #This uses the compartmental model rather than individual mosquitoes (faster and less stochastic)
       
